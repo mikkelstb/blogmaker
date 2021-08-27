@@ -11,6 +11,9 @@ import (
 	"time"
 )
 
+var cfg = readConfig()
+var blogfolder = blogFolder{path: cfg.BlogCatalouge}
+
 func main() {
 	fmt.Println("Hello World. This is Blogmaker")
 	fmt.Printf("The time is now: %v \n", time.Now())
@@ -36,8 +39,6 @@ func main() {
 
 func blogHandler(w http.ResponseWriter, r *http.Request) {
 
-	cfg := readConfig()
-
 	type page struct {
 		Title   string
 		Intro   string
@@ -48,7 +49,6 @@ func blogHandler(w http.ResponseWriter, r *http.Request) {
 	p.Title = cfg.Title
 	p.Intro = cfg.Intro
 
-	blogfolder := blogFolder{path: cfg.BlogCatalouge}
 	p.Entries = blogfolder.getEntries(10, 0)
 	fmt.Println(p)
 
