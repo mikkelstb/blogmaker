@@ -1,0 +1,18 @@
+<html>
+
+<head>
+</head>
+
+<body>
+    <h1>{{.Title}}</h1>
+    {{range $val := .Entries}}
+
+    <h3>{{$val.Title}}</h3>
+    <div>{{printf "%s" $val.Contents}}</div>
+
+    {{end}}
+
+    <h2>{{.Intro}}</h2>
+</body>
+
+</html>
