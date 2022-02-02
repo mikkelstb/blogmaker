@@ -1,0 +1,39 @@
+<html>
+
+<head>
+    <link type="text/css" href="/resources/simple.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="header">
+        <h2>{{.Title}}</h2>
+    </div>
+    <div class="row">
+        <div class="leftcolumn">
+            {{range $val := .Posts}}
+            <div class="card">
+                <h2 class="card">{{ $val.Title }}</h2>
+                <p class="date">{{ $val.GetPosted }}</p>
+                <p>{{ $val.Contents }}</p>
+            </div>
+            {{end}}
+        </div>
+        <div class="rightcolumn">
+            <div class="card">
+                <h2>About Me</h2>
+                <p>A danish citizen living in the Norwegian capital.</p>
+            </div>
+            <div class="card">
+                <h2>Elswhere</h2>
+                <p><a href="https://twitter.com/mikkelstb">On Twitter</a></p>
+                <p><a href="https://github.com/mikkelstb/mikkelstb">On Github</a></p>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <p>{{.Intro}}</p>
+    </div>
+
+</body>
+
+</html>

@@ -12,47 +12,44 @@ import (
 )
 
 var cfg = readConfig()
-var blogfolder = blogFolder{path: cfg.BlogCatalouge}
+var catalouge Catalouge
 
 func main() {
 	fmt.Println("Hello World. This is Blogmaker")
 	fmt.Printf("The time is now: %v \n", time.Now())
 
+	defer fmt.Printf("Server ended. The time is now: %v \n", time.Now())
+
+	catalouge = NewCatalouge(cfg.Catalouges.Posts, cfg.Catalouges.Cards)
+	resources_fileserver := http.FileServer(http.Dir(cfg.Catalouges.Resources))
+
+	http.HandleFunc("/", handler)
 	http.HandleFunc("/blog/", blogHandler)
-	http.HandleFunc("/test/", handler)
+	http.HandleFunc("/resources/", http.StripPrefix("/resources", resources_fileserver).ServeHTTP)
 
 	log.Fatal(http.ListenAndServe(":3000", nil))
-
-	// for _, entry := range entries {
-	// 	fmt.Printf("Found: %v @ %v \n", entry.Title, entry.Posted.String())
-	// }
-
-	// fmt.Println("-----")
-
-	// entries = blogfolder.getEntries(12, 0)
-
-	// for _, entry := range entries {
-	// 	fmt.Printf("Found: %v @ %v \n", entry.Title, entry.Posted.String())
-	// }
-
 }
 
 func blogHandler(w http.ResponseWriter, r *http.Request) {
 
 	type page struct {
-		Title   string
-		Intro   string
-		Entries []Entry
+		Title string
+		Intro string
+		Posts []Post
+		Cards []Card
 	}
 
 	p := new(page)
-	p.Title = cfg.Title
-	p.Intro = cfg.Intro
+	p.Title = cfg.General.Title
+	p.Intro = cfg.General.Intro
 
-	p.Entries = blogfolder.getEntries(10, 0)
-	fmt.Println(p)
+	p.Posts = catalouge.posts
 
-	t, _ := template.ParseFiles("./templates/blog.html")
+	// for post_id := range p.Posts {
+	// 	fmt.Println(p.Posts[post_id].Title)
+	// }
+
+	t, _ := template.ParseFiles(cfg.Catalouges.Templates + "/page_front.html")
 	t.Execute(w, p)
 }
 
@@ -62,7 +59,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func readConfig() *config {
 
-	json_file, err := os.Open("setup.json")
+	json_file, err := os.Open("config.json")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -78,15 +75,8 @@ func readConfig() *config {
 		log.Fatal(err)
 	}
 
-	fmt.Println(config_file.Title)
-	fmt.Println(config_file.Intro)
-	fmt.Println(config_file.BlogCatalouge)
+	fmt.Println(config_file.General.Title)
+	fmt.Println(config_file.General.Intro)
 
 	return config_file
-}
-
-type config struct {
-	Title         string `json:"title"`
-	Intro         string `json:"intro"`
-	BlogCatalouge string `json:"blogCatalouge"`
 }
