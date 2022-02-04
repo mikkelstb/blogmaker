@@ -6,4 +6,4 @@ Work is under construction.
 An example of the program, is running as my own personal blog at http://misb.xyz/blog.
 
 
-!(/assets/screenshot.png)
+![Screenshot](/assets/screenshot.png)
