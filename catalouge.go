@@ -13,17 +13,62 @@ type Catalouge struct {
 	path_cards string
 	posts      []Post
 	cards      []Card
+
+	tag_index  map[string][]string
+	post_index map[string]int
+
 	//pages catalouge
 }
 
 func NewCatalouge(path_posts, path_cards string) Catalouge {
 	c := Catalouge{path_posts: path_posts, path_cards: path_cards}
 
+	c.post_index = make(map[string]int)
+	c.tag_index = map[string][]string{}
+
 	c.posts = c.readPosts()
-	//c.cards = c.readCards()
+	c.makePostIndex()
+	c.makeTagIndex()
+
+	fmt.Println(c.tag_index)
+
+	c.cards = c.readCards()
+
 	//c.pages = c.readPages()
 
 	return c
+}
+
+func (c *Catalouge) readCards() []Card {
+	var cards []Card
+
+	files, err := ioutil.ReadDir(fmt.Sprintf("%v", c.path_cards))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	filepattern, _ := regexp.Compile(`.*?\.xml`)
+
+	for _, file := range files {
+
+		if !(filepattern.MatchString(file.Name())) {
+			continue
+		}
+
+		log.Default().Printf("Reading %v \n", file.Name())
+
+		file, err := ioutil.ReadFile(fmt.Sprintf("%v/%v", c.path_cards, file.Name()))
+		if err != nil {
+			log.Fatal(err)
+		}
+		e := Card{}
+		err = xml.Unmarshal(file, &e)
+		if err != nil {
+			log.Fatal(err)
+		}
+		cards = append(cards, e)
+	}
+	return cards
 }
 
 func (c *Catalouge) readPosts() []Post {
@@ -38,7 +83,7 @@ func (c *Catalouge) readPosts() []Post {
 		log.Fatal(err)
 	}
 
-	filepattern, _ := regexp.Compile(`\d{4}_\d{2}_\d{2}_\d{4}.xml`)
+	filepattern, _ := regexp.Compile(`\d{4}_\d{2}_\d{2}_\d{4}\.xml`)
 
 	for _, file := range files {
 
@@ -57,14 +102,27 @@ func (c *Catalouge) readPosts() []Post {
 		if err != nil {
 			log.Fatal(err)
 		}
-		entries = append(entries, e)
+		//Append next to beginning of slice
+		entries = append([]Post{e}, entries...)
 	}
-	var ea []Post
-	for index := len(entries) - 1; index >= 0; index-- {
-		ea = append(ea, entries[index])
-	}
+	return entries
+}
 
-	return ea
+// Populate the map post_index. This makes an easy hashtable that converts post id's into slice-index for c.posts.
+
+func (c *Catalouge) makePostIndex() {
+
+	for p := range c.posts {
+		c.post_index[c.posts[p].Id] = p
+	}
+}
+
+func (c *Catalouge) makeTagIndex() {
+	for p := range c.posts {
+		for _, t := range c.posts[p].GetTags() {
+			c.tag_index[t] = append(c.tag_index[t], c.posts[p].Id)
+		}
+	}
 }
 
 // func (c *Catalouge) writePost(e Post) {

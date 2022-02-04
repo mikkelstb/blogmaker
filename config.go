@@ -8,6 +8,7 @@ type config struct {
 type general struct {
 	Title string `json:"title"`
 	Intro string `json:"intro"`
+	Url   string `json:url`
 }
 
 type catalouges struct {

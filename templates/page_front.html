@@ -6,28 +6,26 @@
 
 <body>
     <div class="header">
-        <h2>{{.Title}}</h2>
+        <h1>{{.Title}}</h1>
     </div>
     <div class="row">
-        <div class="leftcolumn">
-            {{range $val := .Posts}}
+        <div class="leftcolumn">{{range $val := .Posts}}
             <div class="card">
-                <h2 class="card">{{ $val.Title }}</h2>
-                <p class="date">{{ $val.GetPosted }}</p>
-                <p>{{ $val.Contents }}</p>
+                <h2 class="card"><a href="/blog/post/{{$val.Id}}">{{ $val.Title }}</a></h2>
+                <p class="date">{{$val.GetPosted}}</p>
+                <p>{{$val.Contents}}</p>
+                
+                <p>{{range $tag := $val.GetTags}} <span class="tag">{{$tag}}</span> {{end}}</p>
+                <p><a href="/blog/post/{{$val.Id}}">Read more</a></p>
+            </div>
+        {{end}}</div>
+        <div class="rightcolumn">
+            {{range $val := .Cards}}
+            <div class="card">
+                <h2>{{ $val.Title}}</h2>
+                {{ $val.GetContentsAsHtml }}
             </div>
             {{end}}
-        </div>
-        <div class="rightcolumn">
-            <div class="card">
-                <h2>About Me</h2>
-                <p>A danish citizen living in the Norwegian capital.</p>
-            </div>
-            <div class="card">
-                <h2>Elswhere</h2>
-                <p><a href="https://twitter.com/mikkelstb">On Twitter</a></p>
-                <p><a href="https://github.com/mikkelstb/mikkelstb">On Github</a></p>
-            </div>
         </div>
     </div>
     <div class="footer">

@@ -1,16 +1,29 @@
 package main
 
-import "time"
+import (
+	"strings"
+	"time"
+)
 
 type Post struct {
-	Id       int       `xml:"id"`
+	Id       string    `xml:"id"`
 	Created  time.Time `xml:"created"`
 	Posted   time.Time `xml:"posted"`
 	Title    string    `xml:"title"`
 	Contents string    `xml:"contents"`
-	Tags     []string  `xml:"tags"`
+	Tags     string    `xml:"tags"`
 }
 
 func (p Post) GetPosted() string {
 	return p.Posted.Format("Monday, 02.Jan, 2006 15:04")
+}
+
+func (p Post) GetTags() []string {
+
+	return strings.Split(p.Tags, " ")
+}
+
+func (p Post) getIntro() string {
+
+	return ""
 }
