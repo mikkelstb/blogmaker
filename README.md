@@ -1,4 +1,4 @@
-# blogmaker
+# Blogmaker
 
 Blogmaker is a minimalistic blog application.
 Work is under construction.
