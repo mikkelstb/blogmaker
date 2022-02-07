@@ -19,8 +19,8 @@
         <div class="rightcolumn">
             {{range $val := .Cards}}
             <div class="card">
-                <h2>{{ $val.Title}}</h2>
-                <p>{{ $val.GetContentsAsHtml }}</p>
+                <h2>{{$val.Title}}</h2>
+                <p>{{$val.GetContentsAsHtml}}</p>
             </div>
             {{end}}
         </div>
