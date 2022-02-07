@@ -9,6 +9,11 @@ Blogmaker is a minimalistic blog application. No database or webserver required.
 
 Work is under construction.
 
+Missing features/to do:
+- Writing and editing posts
+- Including images in posts
+- Limit number of posts on frontpage
+
 An example of the program, is running as my own personal blog at http://misb.xyz/blog.
 
 
