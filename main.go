@@ -26,7 +26,7 @@ func main() {
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/blog/", blogHandler)
 	http.HandleFunc("/blog/post/", postHandler)
-	//http.handlefunc("blog/tag/", searchHandler)
+	http.HandleFunc("/blog/tag/", searchHandler)
 	http.HandleFunc("/resources/", http.StripPrefix("/resources", resources_fileserver).ServeHTTP)
 
 	log.Fatal(http.ListenAndServe(":3000", nil))
@@ -43,6 +43,7 @@ func blogHandler(w http.ResponseWriter, r *http.Request) {
 		Intro string
 		Posts []Post
 		Cards []Card
+		Tags  map[string]int
 	}
 
 	catalouge = NewCatalouge(cfg.Catalouges.Posts, cfg.Catalouges.Cards)
@@ -53,6 +54,12 @@ func blogHandler(w http.ResponseWriter, r *http.Request) {
 
 	p.Posts = catalouge.posts
 	p.Cards = catalouge.cards
+
+	p.Tags = map[string]int{}
+
+	for k, v := range catalouge.tag_index {
+		p.Tags[k] = len(v)
+	}
 
 	for c := range p.Cards {
 		fmt.Println(p.Cards[c].Contents)
@@ -85,6 +92,35 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 	p.Post = catalouge.posts[catalouge.post_index[post_request_id]]
 
 	t, _ := template.ParseFiles(cfg.Catalouges.Templates + "/post_single.html")
+	t.Execute(w, p)
+}
+
+func searchHandler(w http.ResponseWriter, r *http.Request) {
+
+	type page struct {
+		Title string
+		Intro string
+		Url   string
+		Posts []Post
+		Cards []Card
+	}
+
+	catalouge = NewCatalouge(cfg.Catalouges.Posts, cfg.Catalouges.Cards)
+
+	p := new(page)
+	p.Title = cfg.General.Title
+	p.Intro = cfg.General.Intro
+	p.Cards = catalouge.cards
+	p.Url = cfg.General.Url
+
+	tag_request := path.Base(r.URL.Path)
+	post_ids := catalouge.tag_index[tag_request]
+
+	for _, pid := range post_ids {
+		p.Posts = append(p.Posts, catalouge.posts[catalouge.post_index[pid]])
+	}
+
+	t, _ := template.ParseFiles(cfg.Catalouges.Templates + "/post_search.html")
 	t.Execute(w, p)
 }
 

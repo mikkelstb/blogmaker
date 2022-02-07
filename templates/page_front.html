@@ -14,7 +14,7 @@
                 <h2 class="card"><a href="/blog/post/{{$val.Id}}">{{ $val.Title }}</a></h2>
                 <p class="date">{{$val.GetPosted}}</p>
                 <p>{{$val.Contents}}</p>
-                
+
                 <p>{{range $tag := $val.GetTags}} <span class="tag">{{$tag}}</span> {{end}}</p>
                 <p><a href="/blog/post/{{$val.Id}}">Read more</a></p>
             </div>
@@ -23,10 +23,15 @@
             {{range $val := .Cards}}
             <div class="card">
                 <h2>{{ $val.Title}}</h2>
-                {{ $val.GetContentsAsHtml }}
+                <p>{{$val.GetContentsAsHtml}}</p>
             </div>
-            {{end}}
-        </div>
+        {{end}}
+            <div class="card">
+                <h2>Tags</h2>
+                {{range $tag_name, $number_of_posts := .Tags}} <p> <a href="/blog/tag/{{$tag_name}}">{{$tag_name}} ({{$number_of_posts}})</a></p>  {{end}}
+            </div>
+    
+    </div>
     </div>
     <div class="footer">
         <p>{{.Intro}}</p>

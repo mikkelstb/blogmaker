@@ -12,6 +12,7 @@ type Post struct {
 	Title    string    `xml:"title"`
 	Contents string    `xml:"contents"`
 	Tags     string    `xml:"tags"`
+	Language string    `xml:"language"`
 }
 
 func (p Post) GetPosted() string {

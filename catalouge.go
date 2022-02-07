@@ -14,10 +14,11 @@ type Catalouge struct {
 	posts      []Post
 	cards      []Card
 
-	tag_index  map[string][]string
+	// post_id -> position on slice
 	post_index map[string]int
 
-	//pages catalouge
+	// tag_name -> []post_id
+	tag_index map[string][]string
 }
 
 func NewCatalouge(path_posts, path_cards string) Catalouge {
