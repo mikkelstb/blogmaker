@@ -23,8 +23,3 @@ func (p Post) GetTags() []string {
 
 	return strings.Split(p.Tags, " ")
 }
-
-func (p Post) getIntro() string {
-
-	return ""
-}

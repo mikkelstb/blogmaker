@@ -1,21 +1,33 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"path"
 	"time"
+
+	"github.com/gorilla/sessions"
 )
 
 var cfg = readConfig()
 var catalouge Catalouge
+var key = []byte("test")
+var store = sessions.NewCookieStore(key)
+
+type page struct {
+	Title string
+	Intro string
+	Url   string
+	Posts []Post
+	Post  Post
+	Cards []Card
+	Tags  map[string]int
+}
 
 func main() {
+
 	fmt.Println("Hello World. This is Blogmaker")
 	fmt.Printf("The time is now: %v \n", time.Now())
 
@@ -27,7 +39,9 @@ func main() {
 	http.HandleFunc("/blog/", blogHandler)
 	http.HandleFunc("/blog/post/", postHandler)
 	http.HandleFunc("/blog/tag/", searchHandler)
-	http.HandleFunc("/resources/", http.StripPrefix("/resources", resources_fileserver).ServeHTTP)
+	http.HandleFunc("/blog/resources/", http.StripPrefix("/blog/resources", resources_fileserver).ServeHTTP)
+	http.HandleFunc("/blog/login/", loginHandler)
+	http.HandleFunc("/blog/logout/", logouthandler)
 
 	log.Fatal(http.ListenAndServe(":3000", nil))
 }
@@ -38,13 +52,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func blogHandler(w http.ResponseWriter, r *http.Request) {
 
-	type page struct {
-		Title string
-		Intro string
-		Posts []Post
-		Cards []Card
-		Tags  map[string]int
-	}
+	// session, _ := store.Get(r, "session_data")
+
+	// if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+	// 	http.Error(w, "Forbidden", http.StatusForbidden)
+	// 	return
+	// }
 
 	catalouge = NewCatalouge(cfg.Catalouges.Posts, cfg.Catalouges.Cards)
 
@@ -55,7 +68,7 @@ func blogHandler(w http.ResponseWriter, r *http.Request) {
 	p.Posts = catalouge.posts
 	p.Cards = catalouge.cards
 
-	p.Tags = map[string]int{}
+	p.Tags = make(map[string]int)
 
 	for k, v := range catalouge.tag_index {
 		p.Tags[k] = len(v)
@@ -65,19 +78,31 @@ func blogHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(p.Cards[c].Contents)
 	}
 
-	t, _ := template.ParseFiles(cfg.Catalouges.Templates + "/page_front.html")
+	t, _ := template.ParseFiles(
+		cfg.Catalouges.Templates+"/page_front.html",
+		cfg.Catalouges.Templates+"/head.html",
+	)
 	t.Execute(w, p)
 }
 
-func postHandler(w http.ResponseWriter, r *http.Request) {
+func loginHandler(w http.ResponseWriter, r *http.Request) {
 
-	type page struct {
-		Title string
-		Intro string
-		Url   string
-		Post  Post
-		Cards []Card
-	}
+	session, _ := store.Get(r, "session_data")
+
+	session.Values["authenticated"] = true
+	session.Save(r, w)
+
+}
+
+func logouthandler(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "session_data")
+
+	// Revoke users authentication
+	session.Values["authenticated"] = false
+	session.Save(r, w)
+}
+
+func postHandler(w http.ResponseWriter, r *http.Request) {
 
 	catalouge = NewCatalouge(cfg.Catalouges.Posts, cfg.Catalouges.Cards)
 
@@ -91,19 +116,14 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 
 	p.Post = catalouge.posts[catalouge.post_index[post_request_id]]
 
-	t, _ := template.ParseFiles(cfg.Catalouges.Templates + "/post_single.html")
+	t, _ := template.ParseFiles(
+		cfg.Catalouges.Templates+"/post_single.html",
+		cfg.Catalouges.Templates+"/head.html",
+	)
 	t.Execute(w, p)
 }
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
-
-	type page struct {
-		Title string
-		Intro string
-		Url   string
-		Posts []Post
-		Cards []Card
-	}
 
 	catalouge = NewCatalouge(cfg.Catalouges.Posts, cfg.Catalouges.Cards)
 
@@ -120,30 +140,9 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		p.Posts = append(p.Posts, catalouge.posts[catalouge.post_index[pid]])
 	}
 
-	t, _ := template.ParseFiles(cfg.Catalouges.Templates + "/post_search.html")
+	t, _ := template.ParseFiles(
+		cfg.Catalouges.Templates+"/post_search.html",
+		cfg.Catalouges.Templates+"/head.html",
+	)
 	t.Execute(w, p)
-}
-
-func readConfig() *config {
-
-	json_file, err := os.Open("config.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer json_file.Close()
-
-	json_data, err := ioutil.ReadAll(json_file)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	config_file := new(config)
-	if err := json.Unmarshal(json_data, &config_file); err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(config_file.General.Title)
-	fmt.Println(config_file.General.Intro)
-
-	return config_file
 }
