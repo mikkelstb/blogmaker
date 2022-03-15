@@ -47,17 +47,13 @@ func main() {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Incoming request")
 	http.Redirect(w, r, cfg.General.Url, http.StatusPermanentRedirect)
 }
 
 func blogHandler(w http.ResponseWriter, r *http.Request) {
 
-	// session, _ := store.Get(r, "session_data")
-
-	// if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
-	// 	http.Error(w, "Forbidden", http.StatusForbidden)
-	// 	return
-	// }
+	fmt.Println("Incoming request")
 
 	catalouge = NewCatalouge(cfg.Catalouges.Posts, cfg.Catalouges.Cards)
 
@@ -81,6 +77,7 @@ func blogHandler(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles(
 		cfg.Catalouges.Templates+"/page_front.html",
 		cfg.Catalouges.Templates+"/head.html",
+		cfg.Catalouges.Templates+"/posts.html",
 	)
 	t.Execute(w, p)
 }
@@ -143,6 +140,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles(
 		cfg.Catalouges.Templates+"/post_search.html",
 		cfg.Catalouges.Templates+"/head.html",
+		cfg.Catalouges.Templates+"/posts.html",
 	)
 	t.Execute(w, p)
 }

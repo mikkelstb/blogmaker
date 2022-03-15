@@ -9,16 +9,7 @@
         <h1>{{.Title}}</h1>
     </div>
     <div class="row">
-        <div class="leftcolumn">{{range $val := .Posts}}
-            <div class="card">
-                <h2 class="card"><a href="/blog/post/{{$val.Id}}">{{ $val.Title }}</a></h2>
-                <p class="date">{{$val.GetPosted}}</p>
-                <p>{{$val.Contents}}</p>
-                
-                <p>{{range $tag := $val.GetTags}} <span class="tag">{{$tag}}</span> {{end}}</p>
-                <p><a href="/blog/post/{{$val.Id}}">Read more</a></p>
-            </div>
-        {{end}}</div>
+    {{template "posts" .}}
         <div class="rightcolumn">
             {{range $val := .Cards}}
             <div class="card">

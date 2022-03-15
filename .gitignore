@@ -1,0 +1,6 @@
+posts/*.xml
+cards/*.xml
+resources/*
+blogmaker
+config.json
+.DS_Store
