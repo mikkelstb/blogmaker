@@ -35,20 +35,14 @@ func main() {
 
 	resources_fileserver := http.FileServer(http.Dir(cfg.Catalouges.Resources))
 
-	http.HandleFunc("/", handler)
-	http.HandleFunc("/blog/", blogHandler)
-	http.HandleFunc("/blog/post/", postHandler)
-	http.HandleFunc("/blog/tag/", searchHandler)
-	http.HandleFunc("/blog/resources/", http.StripPrefix("/blog/resources", resources_fileserver).ServeHTTP)
-	http.HandleFunc("/blog/login/", loginHandler)
-	http.HandleFunc("/blog/logout/", logouthandler)
+	http.HandleFunc("/", blogHandler)
+	http.HandleFunc("/post/", postHandler)
+	http.HandleFunc("/tag/", searchHandler)
+	http.HandleFunc("/resources/", http.StripPrefix("/blog/resources", resources_fileserver).ServeHTTP)
+	http.HandleFunc("/login/", loginHandler)
+	http.HandleFunc("/logout/", logouthandler)
 
 	log.Fatal(http.ListenAndServe(":3000", nil))
-}
-
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Incoming request")
-	http.Redirect(w, r, cfg.General.Url, http.StatusPermanentRedirect)
 }
 
 func blogHandler(w http.ResponseWriter, r *http.Request) {
