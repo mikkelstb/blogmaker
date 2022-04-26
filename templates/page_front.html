@@ -15,7 +15,7 @@
         {{end}}
             <div class="card">
                 <h2>Tags</h2>
-                {{range $tag_name, $number_of_posts := .Tags}} <p> <a href="./blog/tag/{{$tag_name}}">{{$tag_name}} ({{$number_of_posts}})</a></p>  {{end}}
+                {{range $tag_name, $number_of_posts := .Tags}} <p> <a href="./tag/{{$tag_name}}">{{$tag_name}} ({{$number_of_posts}})</a></p>  {{end}}
             </div>
     </div>
     </div>
