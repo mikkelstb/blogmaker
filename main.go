@@ -38,7 +38,7 @@ func main() {
 	http.HandleFunc("/", blogHandler)
 	http.HandleFunc("/post/", postHandler)
 	http.HandleFunc("/tag/", searchHandler)
-	http.HandleFunc("/resources/", http.StripPrefix("/blog/resources", resources_fileserver).ServeHTTP)
+	http.HandleFunc("/resources/", http.StripPrefix("/resources", resources_fileserver).ServeHTTP)
 	http.HandleFunc("/login/", loginHandler)
 	http.HandleFunc("/logout/", logouthandler)
 
