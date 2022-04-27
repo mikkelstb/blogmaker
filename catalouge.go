@@ -92,7 +92,7 @@ func (c *Catalouge) readPosts() []Post {
 			continue
 		}
 
-		log.Default().Printf("Reading %v \n", file.Name())
+		//log.Default().Printf("Reading %v \n", file.Name())
 
 		file, err := ioutil.ReadFile(fmt.Sprintf("%v/%v", c.path_posts, file.Name()))
 		if err != nil {
