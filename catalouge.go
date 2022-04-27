@@ -31,7 +31,7 @@ func NewCatalouge(path_posts, path_cards string) Catalouge {
 	c.makePostIndex()
 	c.makeTagIndex()
 
-	fmt.Println(c.tag_index)
+	//fmt.Println(c.tag_index)
 
 	c.cards = c.readCards()
 
@@ -74,8 +74,8 @@ func (c *Catalouge) readCards() []Card {
 
 func (c *Catalouge) readPosts() []Post {
 
-	fmt.Println("Reading posts from file")
-	fmt.Println(c.path_posts)
+	//fmt.Println("Reading posts from file")
+	//fmt.Println(c.path_posts)
 
 	var entries []Post
 

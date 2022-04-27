@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -45,8 +44,8 @@ func readConfig() *config {
 		log.Fatal(err)
 	}
 
-	fmt.Println(config_file.General.Title)
-	fmt.Println(config_file.General.Intro)
+	//fmt.Println(config_file.General.Title)
+	//fmt.Println(config_file.General.Intro)
 
 	return config_file
 }

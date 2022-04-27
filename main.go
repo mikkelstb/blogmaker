@@ -47,8 +47,6 @@ func main() {
 
 func blogHandler(w http.ResponseWriter, r *http.Request) {
 
-	fmt.Println("Incoming request")
-
 	catalouge = NewCatalouge(cfg.Catalouges.Posts, cfg.Catalouges.Cards)
 
 	p := new(page)
@@ -62,10 +60,6 @@ func blogHandler(w http.ResponseWriter, r *http.Request) {
 
 	for k, v := range catalouge.tag_index {
 		p.Tags[k] = len(v)
-	}
-
-	for c := range p.Cards {
-		fmt.Println(p.Cards[c].Contents)
 	}
 
 	t, _ := template.ParseFiles(
