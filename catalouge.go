@@ -56,7 +56,7 @@ func (c *Catalouge) readCards() []Card {
 			continue
 		}
 
-		log.Default().Printf("Reading %v \n", file.Name())
+		//log.Default().Printf("Reading %v \n", file.Name())
 
 		file, err := ioutil.ReadFile(fmt.Sprintf("%v/%v", c.path_cards, file.Name()))
 		if err != nil {
