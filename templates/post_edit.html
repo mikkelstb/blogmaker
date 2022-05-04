@@ -1,0 +1,34 @@
+<html>
+
+<head>
+    {{template "head" .}}
+</head>
+
+<body>
+    <div class="header">
+        <h1><a class="header" href="{{.Url}}">{{.Title}}</a></h1>
+    </div>
+    <div class="row">
+        <div class="leftcolumn">
+            <div class="card">
+                <h2 class="card">{{ .Post.Title }}</h2>
+                <p class="date">{{ .Post.GetPosted }}</p>
+                <p>{{ .Post.Contents }}</p>
+            </div>
+        </div>
+        <div class="rightcolumn">
+            {{range $val := .Cards}}
+            <div class="card">
+                <h2>{{$val.Title}}</h2>
+                <p>{{$val.GetContentsAsHtml}}</p>
+            </div>
+            {{end}}
+        </div>
+    </div>
+    <div class="footer">
+        <p>{{.Intro}}</p>
+    </div>
+
+</body>
+
+</html>
