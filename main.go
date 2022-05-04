@@ -52,6 +52,7 @@ func blogHandler(w http.ResponseWriter, r *http.Request) {
 	p := new(page)
 	p.Title = cfg.General.Title
 	p.Intro = cfg.General.Intro
+	p.Url = cfg.General.Url
 
 	p.Posts = catalouge.posts
 	p.Cards = catalouge.cards
