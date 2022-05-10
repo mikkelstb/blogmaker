@@ -1,8 +1,10 @@
 {{define "posts"}}
+{{$url := .Url}}
 <div class="leftcolumn">{{range $val := .Posts}}
     <div class="card">
-        <h2 class="card"><a href="{{.Url}}/post/{{$val.Id}}">{{ $val.Title }}</a></h2>
-        <p class="date">{{$val.GetPosted}}</p>
+        <h2 class="card"><a href="{{$url}}/post/{{$val.Id}}">{{ $val.Title }}</a></h2>
+        <p class="date">Posted: {{$val.GetPosted}}</p>
+        <p class="date">Edited: {{$val.GetEdited}}</p>
         <p>{{range $tag := $val.GetTags}} <span class="tag">{{$tag}}</span> {{end}}</p>
     </div>
 {{end}}</div>

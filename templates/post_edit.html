@@ -11,9 +11,14 @@
     <div class="row">
         <div class="leftcolumn">
             <div class="card">
-                <h2 class="card">{{ .Post.Title }}</h2>
-                <p class="date">{{ .Post.GetPosted }}</p>
-                <p>{{ .Post.Contents }}</p>
+                <form id="edit" action="{{ .Url }}/edit/{{ .Post.Id }}" method="post">
+                    <h2 class="card">{{ .Post.Title }}</h2>
+                    <p class="date">{{ .Post.GetPosted }}</p>
+                    <textarea form="edit" name="title" class="title" id="title">{{ .Post.Title}}</textarea>
+                    <textarea form="edit" name="contents" class="contents" id="contents">{{ .Post.Contents }}</textarea>
+                    <input type="hidden" name="id" value="{{ .Post.Id }}">
+                    <input type="submit" value="save">
+                </form>
             </div>
         </div>
         <div class="rightcolumn">

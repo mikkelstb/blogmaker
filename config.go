@@ -13,9 +13,10 @@ type config struct {
 }
 
 type general struct {
-	Title string `json:"title"`
-	Intro string `json:"intro"`
-	Url   string `json:"url"`
+	Title          string `json:"title"`
+	Intro          string `json:"intro"`
+	Url            string `json:"url"`
+	Login_key_file string `json:"login_key_file"`
 }
 
 type catalouges struct {
@@ -26,9 +27,9 @@ type catalouges struct {
 	Cards     string `json:"cards"`
 }
 
-func readConfig() *config {
+func readConfig(filename string) *config {
 
-	json_file, err := os.Open("config.json")
+	json_file, err := os.Open(filename)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 	"regexp"
+	"time"
 )
 
 type Catalouge struct {
@@ -27,7 +29,7 @@ func NewCatalouge(path_posts, path_cards string) Catalouge {
 	c.post_index = make(map[string]int)
 	c.tag_index = map[string][]string{}
 
-	c.posts = c.readPosts()
+	c.readPosts()
 	c.makePostIndex()
 	c.makeTagIndex()
 
@@ -38,6 +40,29 @@ func NewCatalouge(path_posts, path_cards string) Catalouge {
 	//c.pages = c.readPages()
 
 	return c
+}
+
+func (c *Catalouge) savePost(id, title, contents string) error {
+
+	post := c.posts[c.post_index[id]]
+
+	post.Title = title
+	post.Contents = contents
+	post.Edited = time.Now()
+
+	xmldata, err := xml.Marshal(post)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+
+	err = os.WriteFile(fmt.Sprintf("%v/%v", c.path_posts, post.filename), xmldata, 0666)
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+	return nil
 }
 
 func (c *Catalouge) readCards() []Card {
@@ -72,7 +97,7 @@ func (c *Catalouge) readCards() []Card {
 	return cards
 }
 
-func (c *Catalouge) readPosts() []Post {
+func (c *Catalouge) readPosts() {
 
 	//fmt.Println("Reading posts from file")
 	//fmt.Println(c.path_posts)
@@ -92,21 +117,21 @@ func (c *Catalouge) readPosts() []Post {
 			continue
 		}
 
-		//log.Default().Printf("Reading %v \n", file.Name())
-
-		file, err := ioutil.ReadFile(fmt.Sprintf("%v/%v", c.path_posts, file.Name()))
+		xml_file, err := ioutil.ReadFile(fmt.Sprintf("%v/%v", c.path_posts, file.Name()))
 		if err != nil {
 			log.Fatal(err)
 		}
 		e := Post{}
-		err = xml.Unmarshal(file, &e)
+		e.filename = file.Name()
+		err = xml.Unmarshal(xml_file, &e)
 		if err != nil {
 			log.Fatal(err)
 		}
+
 		//Append next to beginning of slice
 		entries = append([]Post{e}, entries...)
 	}
-	return entries
+	c.posts = entries
 }
 
 // Populate the map post_index. This makes an easy hashtable that converts post id's into slice-index for c.posts.
